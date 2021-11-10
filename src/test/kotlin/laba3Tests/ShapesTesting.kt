@@ -3,6 +3,7 @@ package laba3Tests
 import laba3.*
 import org.junit.Assert
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 /**
  * The main testing class
@@ -170,4 +171,75 @@ class TestShapes {
         Assert.assertEquals(perimeter, shape.calcPerimeter(), 0.0)
         Assert.assertEquals(area, shape.calcArea(), 0.0)
     }
+
+    /**
+     * The method tests throwing exception when radius <= 0
+     * @see Circle
+     */
+    @Throws(IllegalArgumentException::class)
+    @Test
+    fun `Circle throws exception testing`() {
+        val exception = assertFailsWith<IllegalArgumentException> {
+            factory.createCircle(0.0)
+        }
+        println(exception)
+        Assert.assertEquals("radius should be a positive number", exception.message)
+    }
+
+    /**
+     * The method tests throwing exception when square side <= 0
+     * @see Square
+     */
+    @Throws(IllegalArgumentException::class)
+    @Test
+    fun `Square throws exception testing`() {
+        val exception = assertFailsWith<IllegalArgumentException> {
+            factory.createSquare(0.0)
+        }
+        println(exception)
+        Assert.assertEquals("square side should be a positive number", exception.message)
+    }
+
+    /**
+     * The method tests throwing exception when any rectangle side <= 0
+     * @see Rectangle
+     */
+    @Throws(IllegalArgumentException::class)
+    @Test
+    fun `Rectangle throws exception testing`() {
+        val exception = assertFailsWith<IllegalArgumentException> {
+            factory.createRectangle(-1.0, 10.0)
+        }
+        println(exception)
+        Assert.assertEquals("rectangle sides should be positive", exception.message)
+    }
+
+    /**
+     * The method tests throwing exception when any triangle side <= 0
+     * @see Triangle
+     */
+    @Throws(IllegalArgumentException::class)
+    @Test
+    fun `Triangle throws exception testing`() {
+        val exception = assertFailsWith<IllegalArgumentException> {
+            factory.createTriangle(-1.0, 10.0, 5.0)
+        }
+        println(exception)
+        Assert.assertEquals("triangle sides should be positive", exception.message)
+    }
+
+    /**
+     * The method tests throwing exception when any triangle side <= 0
+     * @see Triangle
+     */
+    @Throws(IllegalArgumentException::class)
+    @Test
+    fun `Triangle throws exception don't exist testing`() {
+        val exception = assertFailsWith<IllegalArgumentException> {
+            factory.createTriangle(3.0, 4.0, 1.0)
+        }
+        println(exception)
+        Assert.assertEquals("triangle with data length of the sides doesn't exist", exception.message)
+    }
+
 }

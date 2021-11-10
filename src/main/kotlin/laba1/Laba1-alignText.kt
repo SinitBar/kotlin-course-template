@@ -144,8 +144,8 @@ fun alignText(
     lineWidth: Int = 120,
     alignment: Alignment = Alignment.LEFT,
 ): String {
-    if (text.isEmpty()) throw error("the size of the data text is too small")
-    if (lineWidth < 1) throw error("required width is too small")
+    if (text.isEmpty()) throw IllegalArgumentException("the size of the data text is too small")
+    if (lineWidth < 1) throw IllegalArgumentException("required width is too small")
     var aligned: String = text.trimMargin().trimIndent().replace("\n"/*System.lineSeparator()*/, spaceStr)
     val strings: ArrayList<String> = ArrayList() // text parsed into strings
     aligned = parseTextToStrings(aligned, strings, lineWidth)

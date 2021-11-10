@@ -1,14 +1,17 @@
 import java.util.Stack
 import kotlin.math.*
 
-const val openBracketChar = '('
-const val closeBracketChar = ')'
-const val minusChar = '-'
-const val plusChar = '+'
-const val multiplyChar = '*'
-const val divideChar = '/'
-const val degreeChar = '^'
-val firstDigitInNumberRangeChar = '0'..'9'
+enum class OPERATORS(val char: Char) {
+    OPEN_BRACKET_CHAR('('),
+    CLOSE_BRACKET_CHAR(')'),
+    MINUS_CHAR('-'),
+    PLUS_CHAR('+'),
+    MULTIPLY_CHAR('*'),
+    DIVIDE_CHAR('/'),
+    DEGREE_CHAR('^'),
+}
+
+val FIRST_DIGIT_IN_NUMBER_RANGE_CHAR = '0'..'9'
 
 fun minusPlusProcessing(
     operatorsStack: Stack<String>,
@@ -16,23 +19,27 @@ fun minusPlusProcessing(
     index: Int,
     expr: String,
 ) { // should do all operations while there is no (
-    while (!operatorsStack.empty() && operatorsStack.peek() != openBracketChar.toString()) {
-        if (operandsStack.size < 2) throw error("there is not enough operands, index: $index")
+    while (!operatorsStack.empty() && operatorsStack.peek() != OPERATORS.OPEN_BRACKET_CHAR.char.toString()) {
+        if (operandsStack.size < 2)
+            throw IllegalArgumentException("there is not enough operands, index: $index")
         val second = operandsStack.pop()
         operandsStack.push(
             when (operatorsStack.pop()) {
-                minusChar.toString() -> operandsStack.pop() - second
-                plusChar.toString() -> operandsStack.pop() + second
-                multiplyChar.toString() -> operandsStack.pop() * second
-                divideChar.toString() -> operandsStack.pop() / second
-                degreeChar.toString() -> second.pow(operandsStack.pop())
-                else -> throw error("never should happen, the program is bad if it is, index: $index")
+                OPERATORS.MINUS_CHAR.char.toString() -> operandsStack.pop() - second
+                OPERATORS.PLUS_CHAR.char.toString() -> operandsStack.pop() + second
+                OPERATORS.MULTIPLY_CHAR.char.toString() -> operandsStack.pop() * second
+                OPERATORS.DIVIDE_CHAR.char.toString() -> operandsStack.pop() / second
+                OPERATORS.DEGREE_CHAR.char.toString() -> second.pow(operandsStack.pop())
+                else -> throw IllegalArgumentException(
+                    "never should happen, the program is bad if it is, index: $index"
+                )
             }
         )
     }
-    if (operatorsStack.empty() || operatorsStack.peek() == openBracketChar.toString()) {
+    if (operatorsStack.empty() || operatorsStack.peek() == OPERATORS.OPEN_BRACKET_CHAR.char.toString()) {
         operatorsStack.push(expr[index].toString())
-    } else throw error("not enough brackets, index: $index") // situation like sin5, not sin(5) like should
+    } else throw IllegalArgumentException("not enough brackets, index: $index")
+// situation like sin5, not sin(5) like should
 }
 
 fun multiplyDivideProcessing(
@@ -41,25 +48,27 @@ fun multiplyDivideProcessing(
     index: Int,
     expr: String,
 ) { // should do all operations while there is no ( or + or -
-    while (!operatorsStack.empty() && operatorsStack.peek() != openBracketChar.toString() &&
-        operatorsStack.peek() != minusChar.toString() && operatorsStack.peek() != plusChar.toString()
+    while (!operatorsStack.empty() && operatorsStack.peek() != OPERATORS.OPEN_BRACKET_CHAR.char.toString() &&
+        operatorsStack.peek() != OPERATORS.MINUS_CHAR.char.toString() &&
+        operatorsStack.peek() != OPERATORS.PLUS_CHAR.char.toString()
     ) {
-        if (operandsStack.size < 2) throw error("there is not enough operands, index: $index")
+        if (operandsStack.size < 2) throw IllegalArgumentException("there is not enough operands, index: $index")
         val second = operandsStack.pop()
         operandsStack.push(
             when (operatorsStack.pop()) {
-                multiplyChar.toString() -> operandsStack.pop() * second
-                divideChar.toString() -> operandsStack.pop() / second
-                degreeChar.toString() -> second.pow(operandsStack.pop())
-                else -> throw error("never should happen, the program is bad if it is, index: $index")
+                OPERATORS.MULTIPLY_CHAR.char.toString() -> operandsStack.pop() * second
+                OPERATORS.DIVIDE_CHAR.char.toString() -> operandsStack.pop() / second
+                OPERATORS.DEGREE_CHAR.char.toString() -> second.pow(operandsStack.pop())
+                else -> throw IllegalStateException("never should happen, the program is bad if it is, index: $index")
             }
         )
     }
-    if (operatorsStack.empty() || operatorsStack.peek() == openBracketChar.toString() ||
-        operatorsStack.peek() == minusChar.toString() || operatorsStack.peek() == plusChar.toString()
+    if (operatorsStack.empty() || operatorsStack.peek() == OPERATORS.OPEN_BRACKET_CHAR.char.toString() ||
+        operatorsStack.peek() == OPERATORS.MINUS_CHAR.char.toString() ||
+        operatorsStack.peek() == OPERATORS.PLUS_CHAR.char.toString()
     ) {
         operatorsStack.push(expr[index].toString())
-    } else throw error("not enough brackets, index: $index") // another error shouldn't be
+    } else throw IllegalArgumentException("not enough brackets, index: $index") // another error shouldn't be
 }
 
 fun degreeProcessing(
@@ -68,12 +77,14 @@ fun degreeProcessing(
     index: Int,
     expr: String,
 ) {
-    while (!operatorsStack.empty() && (operatorsStack.peek() == "^")) {
-        if (operandsStack.size < 2) throw error("there is not enough operands, index: $index")
+    while (!operatorsStack.empty() && (operatorsStack.peek() == OPERATORS.DEGREE_CHAR.char.toString())) {
+        if (operandsStack.size < 2)
+            throw IllegalArgumentException("there is not enough operands, index: $index")
         val degree = operandsStack.pop()
         operandsStack.push(operandsStack.pop().pow(degree))
     }
-    if (operatorsStack.empty() || operatorsStack.peek() != "^") operatorsStack.push(expr[index].toString())
+    if (operatorsStack.empty() || operatorsStack.peek() != OPERATORS.DEGREE_CHAR.char.toString())
+        operatorsStack.push(expr[index].toString())
 }
 
 fun numberProcessing(
@@ -87,12 +98,12 @@ fun numberProcessing(
             indexCopy++
             continue
         }
-        if (expr[indexCopy + 1] in firstDigitInNumberRangeChar) indexCopy++ else break
+        if (expr[indexCopy + 1] in FIRST_DIGIT_IN_NUMBER_RANGE_CHAR) indexCopy++ else break
         // finds continuous sequence of numbers
     }
     val number: Double? =
         expr.substring(index, indexCopy + 1).toDoubleOrNull() // if there are several dots, will return null
-    operandsStack.push(number ?: throw error("unable to parse a number, index: $indexCopy"))
+    operandsStack.push(number ?: throw IllegalArgumentException("unable to parse a number, index: $indexCopy"))
     return indexCopy
 }
 
@@ -104,13 +115,14 @@ fun pushParsedFunction(
     string1: String,
     string2: String = "",
 ): Int {
-    if (indexCopy + string1.length >= expr.length) throw error("unknown function or word, index: $indexCopy")
+    if (indexCopy + string1.length >= expr.length)
+        throw IllegalArgumentException("unknown function or word, index: $indexCopy")
     var word = ""
     word = buildString {
         for (i in string1.indices) append(expr[indexCopy + i], word) // string1 and string2 have similar length
     }
     if (word == string1 || (string2.isNotEmpty() && word == string2)) operatorsStack.push(word)
-    else throw error("unknown function or word, index: $indexCopy")
+    else throw IllegalArgumentException("unknown function or word, index: $indexCopy")
     return indexCopy + string1.length - 1
 }
 
@@ -132,8 +144,8 @@ fun functionConstantProcessing(
         'p' -> { // pi
             if (indexCopy + 1 < expr.length) {
                 if (expr[++indexCopy] == 'i') operandsStack.push(PI)
-                else throw error("unknown function or word, index: $indexCopy")
-            } else throw error("unknown function or word, index: $indexCopy")
+                else throw IllegalArgumentException("unknown function or word, index: $indexCopy")
+            } else throw IllegalArgumentException("unknown function or word, index: $indexCopy")
         }
     }
     return indexCopy
@@ -154,14 +166,17 @@ fun openBracketProcessing(
 
         "tg" -> {
             operandsStack.push(
-                tan(if (tan(second).isNaN()) throw error("wrong tg argument, index: $index") else operandsStack.pop())
+                tan(
+                    if (tan(second).isNaN()) throw IllegalArgumentException("wrong tg argument, index: $index")
+                    else operandsStack.pop()
+                )
             )
         }
 
         "ctg" -> {
             operandsStack.push(
                 1 / tan(
-                    if ((1 / tan(second)).isNaN()) throw error("wrong ctg argument, index: $index")
+                    if ((1 / tan(second)).isNaN()) throw IllegalArgumentException("wrong ctg argument, index: $index")
                     else operandsStack.pop()
                 )
             )
@@ -169,14 +184,17 @@ fun openBracketProcessing(
 
         "ln" -> {
             operandsStack.push(
-                ln(if ((ln(second)).isNaN()) throw error("wrong ln argument, index: $index") else operandsStack.pop())
+                ln(
+                    if ((ln(second)).isNaN()) throw IllegalArgumentException("wrong ln argument, index: $index")
+                    else operandsStack.pop()
+                )
             )
         }
 
         "lg" -> {
             operandsStack.push(
                 log10(
-                    if ((log10(second)).isNaN()) throw error("wrong lg argument, index: $index")
+                    if ((log10(second)).isNaN()) throw IllegalArgumentException("wrong lg argument, index: $index")
                     else operandsStack.pop()
                 )
             )
@@ -193,28 +211,29 @@ fun closeBracketProcessing(
     operandsStack: Stack<Double>,
     index: Int,
 ) {
-    if (operatorsStack.empty()) throw error("open bracket is missing, index: $index")
-    if (operandsStack.empty()) throw error("operand is missing, index: $index")
+    if (operatorsStack.empty()) throw IllegalArgumentException("open bracket is missing, index: $index")
+    if (operandsStack.empty()) throw IllegalArgumentException("operand is missing, index: $index")
     var foundOpenBracket = false
     while (!operatorsStack.empty()) {
         val second = operandsStack.pop() // have to do it because operands in stack are in reversed order
         when (operatorsStack.pop()) {
-            minusChar.toString() -> operandsStack.push(operandsStack.pop() - second)
-            plusChar.toString() -> operandsStack.push(operandsStack.pop() + second)
-            multiplyChar.toString() -> operandsStack.push(operandsStack.pop() * second)
-            divideChar.toString() -> operandsStack.push(operandsStack.pop() / second)
-            degreeChar.toString() -> operandsStack.push(second.pow(operandsStack.pop()))
+            OPERATORS.MINUS_CHAR.char.toString() -> operandsStack.push(operandsStack.pop() - second)
+            OPERATORS.PLUS_CHAR.char.toString() -> operandsStack.push(operandsStack.pop() + second)
+            OPERATORS.MULTIPLY_CHAR.char.toString() -> operandsStack.push(operandsStack.pop() * second)
+            OPERATORS.DIVIDE_CHAR.char.toString() -> operandsStack.push(operandsStack.pop() / second)
+            OPERATORS.DEGREE_CHAR.char.toString() -> operandsStack.push(second.pow(operandsStack.pop()))
 
-            openBracketChar.toString() -> {
+            OPERATORS.OPEN_BRACKET_CHAR.char.toString() -> {
                 foundOpenBracket = true
                 openBracketProcessing(operatorsStack, operandsStack, index, second)
                 break
             }
 
-            else -> throw error("not enough open brackets, index: $index") // before sin in stack always (, otherwise wrong
+            else -> throw IllegalArgumentException("not enough open brackets, index: $index")
+            // before sin in stack always (, otherwise wrong
         }
     }
-    if (!foundOpenBracket) throw error("open bracket is missing, index: $index")
+    if (!foundOpenBracket) throw IllegalArgumentException("open bracket is missing, index: $index")
 }
 
 fun simplifyExpression(
@@ -223,13 +242,16 @@ fun simplifyExpression(
 ): String {
     var result = expression.filter { !it.isWhitespace() } // deleting all spaces
     result = result.replace(
-        "$openBracketChar$minusChar",
-        "${openBracketChar}0$minusChar"
+        "${OPERATORS.OPEN_BRACKET_CHAR.char}${OPERATORS.MINUS_CHAR.char}",
+        "${OPERATORS.OPEN_BRACKET_CHAR.char}0${OPERATORS.MINUS_CHAR.char}"
     ) // processing unary minus
-    result = result.replace("$openBracketChar$plusChar", openBracketChar.toString()) // processing unary pluses
-    result = if (result[0] == minusChar) result.padStart(1 + result.length, '0')
+    result = result.replace(
+        "${OPERATORS.OPEN_BRACKET_CHAR.char}${OPERATORS.PLUS_CHAR.char}",
+        OPERATORS.OPEN_BRACKET_CHAR.char.toString()
+    ) // processing unary pluses
+    result = if (result[0] == OPERATORS.MINUS_CHAR.char) result.padStart(1 + result.length, '0')
     else {
-        if (result[0] == plusChar) result.drop(1) else result
+        if (result[0] == OPERATORS.PLUS_CHAR.char) result.drop(1) else result
     } // processing minus or plus in the beginning
     println("expression to calculate: $result")
     return result
@@ -239,7 +261,11 @@ fun calculateFromString(
     expression: String,
 ): Double {
     val expr: String = buildString {
-        append(openBracketChar, simplifyExpression(expression), closeBracketChar) // simplified data expression
+        append(
+            OPERATORS.OPEN_BRACKET_CHAR.char,
+            simplifyExpression(expression),
+            OPERATORS.CLOSE_BRACKET_CHAR.char
+        ) // simplified data expression
     }
     val calculated: Double // the result of calculation
     val operandsStack = Stack<Double>() // numbers and constants (pi and e)
@@ -247,19 +273,28 @@ fun calculateFromString(
     var index = 0
     while (index < expr.length) { // go through chars in string
         when (expr[index]) {
-            openBracketChar -> operatorsStack.push(openBracketChar.toString()) // open bracket always go to operators stack
-            in firstDigitInNumberRangeChar -> index = numberProcessing(operandsStack, index, expr)
-            minusChar, plusChar -> minusPlusProcessing(operatorsStack, operandsStack, index, expr)
-            multiplyChar, divideChar -> multiplyDivideProcessing(operatorsStack, operandsStack, index, expr)
-            degreeChar -> degreeProcessing(operatorsStack, operandsStack, index, expr)
+            OPERATORS.OPEN_BRACKET_CHAR.char -> operatorsStack.push(OPERATORS.OPEN_BRACKET_CHAR.char.toString())
+            // open bracket always go to operators stack
+            in FIRST_DIGIT_IN_NUMBER_RANGE_CHAR -> index = numberProcessing(operandsStack, index, expr)
+            OPERATORS.MINUS_CHAR.char, OPERATORS.PLUS_CHAR.char -> minusPlusProcessing(
+                operatorsStack, operandsStack,
+                index, expr
+            )
+            OPERATORS.MULTIPLY_CHAR.char, OPERATORS.DIVIDE_CHAR.char -> multiplyDivideProcessing(
+                operatorsStack,
+                operandsStack,
+                index,
+                expr
+            )
+            OPERATORS.DEGREE_CHAR.char -> degreeProcessing(operatorsStack, operandsStack, index, expr)
             in "sctglpe".toCharArray() -> index = functionConstantProcessing(operatorsStack, operandsStack, index, expr)
-            closeBracketChar -> closeBracketProcessing(operatorsStack, operandsStack, index)
+            OPERATORS.CLOSE_BRACKET_CHAR.char -> closeBracketProcessing(operatorsStack, operandsStack, index)
         }
         index++
     }
     if (operandsStack.empty()) throw error("never should happen, no answer, index: $index")
     calculated = operandsStack.pop()
-    if (!operandsStack.empty()) throw error("not enough operators, index: $index")
-    if (!operatorsStack.empty()) throw error("not enough operands, index: $index")
+    if (!operandsStack.empty()) throw IllegalArgumentException("not enough operators, index: $index")
+    if (!operatorsStack.empty()) throw IllegalArgumentException("not enough operands, index: $index")
     return calculated
 }

@@ -69,13 +69,13 @@ interface CalcTriangle : CalcShape {
 
 class Circle(override var radius: Double) : CalcCircle {
     init {
-        if (this.radius <= 0) throw error("radius should be a positive number")
+        if (this.radius <= 0) throw IllegalArgumentException("radius should be a positive number")
     }
 }
 
 class Square(override var sideLength: Double) : CalcSquare {
     init {
-        if (this.sideLength <= 0) throw error("square side should be a positive number")
+        if (this.sideLength <= 0) throw IllegalArgumentException("square side should be a positive number")
     }
 }
 
@@ -85,7 +85,7 @@ class Rectangle(
 ) : CalcRectangle {
     init {
         if (this.firstSideLength <= 0 || this.secondSideLength <= 0)
-            throw error("rectangle sides should be positive")
+            throw IllegalArgumentException("rectangle sides should be positive")
     }
 }
 
@@ -96,11 +96,11 @@ class Triangle(
 ) : CalcTriangle {
     init {
         if (this.firstSideLength <= 0 || this.secondSideLength <= 0 || this.thirdSideLength <= 0)
-            throw error("rectangle sides should be positive")
+            throw IllegalArgumentException("triangle sides should be positive")
         if (firstSideLength >= secondSideLength + thirdSideLength
             || secondSideLength >= firstSideLength + thirdSideLength
             || thirdSideLength >= firstSideLength + secondSideLength
-        ) throw error("triangle with data length of the sides doesn't exist")
+        ) throw IllegalArgumentException("triangle with data length of the sides doesn't exist")
     }
 }
 

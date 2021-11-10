@@ -29,7 +29,7 @@ fun main(/*args: Array<String>*/) {
         |Уж восемь без пяти.
         |Как поздно! До свидания!
         |Сидите на цепи!»""",
-            10, Alignment.CENTER
+            30, Alignment.CENTER
         )
     )
 }

@@ -3,6 +3,7 @@ package laba4Tests
 import laba4.*
 import org.junit.Assert
 import org.junit.Test
+import kotlin.jvm.Throws
 import kotlin.test.assertFailsWith
 
 /**
@@ -34,9 +35,11 @@ class MatrixTesting {
      * The method tests the creation of object of the class Matrix of invalid size
      * @see Matrix
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `Create matrix error testing`() {
-        val exception = assertFailsWith<IllegalStateException> { Matrix(0, 1) }
+        val exception = assertFailsWith<IllegalArgumentException> { Matrix(0, 1) }
+        println("caught exception: $exception")
         Assert.assertEquals("cannot create matrix with data size", exception.message)
     }
 
@@ -56,11 +59,13 @@ class MatrixTesting {
      * using secondary constructor with wrong sizes
      * @see Matrix
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `Create 2x1 matrix initialized as array of doubles error wrong size testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             Matrix(2, 1, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
         }
+        println("caught exception: $exception")
         Assert.assertEquals("wrong amount of numbers, failed initialization", exception.message)
     }
 
@@ -119,12 +124,14 @@ class MatrixTesting {
      * The method tests the Matrix.get() with invalid data index throws error
      * @see Matrix.get
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `get Matrix invalid index testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             matrix[3, 0]
         }
+        println("caught exception: $exception")
         Assert.assertEquals("invalid index", exception.message)
     }
 
@@ -143,12 +150,14 @@ class MatrixTesting {
      * The method tests the Matrix.set() with invalid data index throws error
      * @see Matrix.set
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `set Matrix invalid index testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             matrix[3, 0] = 0.0
         }
+        println("caught exception: $exception")
         Assert.assertEquals("invalid index", exception.message)
     }
 
@@ -216,12 +225,14 @@ class MatrixTesting {
      * The method tests the Matrix.getMinorMatrix(i, j) throws error when matrix 1x1
      * @see Matrix.getMinorMatrix
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `matrix 1x1 getMinorMatrix throws error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix = Matrix(1, 1, doubleArrayOf(1.1).toTypedArray())
             matrix.getMinorMatrix(0, 0)
         }
+        println("caught exception: $exception")
         Assert.assertEquals("cannot get minor matrix from 1x1 matrix", exception.message)
     }
 
@@ -229,12 +240,14 @@ class MatrixTesting {
      * The method tests the Matrix.getMinorMatrix(i, j) throws error when matrix is non-square
      * @see Matrix.getMinorMatrix
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `non-square matrix getMinorMatrix throws error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix = Matrix(1, 2, doubleArrayOf(1.1, 2.5).toTypedArray())
             matrix.getMinorMatrix(0, 0)
         }
+        println("caught exception: $exception")
         Assert.assertEquals("minor doesn't exist for non-square matrices", exception.message)
     }
 
@@ -242,12 +255,14 @@ class MatrixTesting {
      * The method tests the Matrix.getMinorMatrix(i, j) throws error when index (i, j) is wrong
      * @see Matrix.getMinorMatrix
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `minor with invalid index in matrix getMinorMatrix throws error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.5, 1.3, 4.7).toTypedArray())
             matrix.getMinorMatrix(3, 0)
         }
+        println("caught exception: $exception")
         Assert.assertEquals("invalid minor index", exception.message)
     }
 
@@ -393,28 +408,29 @@ class MatrixTesting {
     }
 
     /**
-     * The method tests the Matrix.getComplementMatrix() throws error when matrix 1x1
+     * The method tests the Matrix.getComplementMatrix() returns right matrix 1x1
      * @see Matrix.getComplementMatrix
      */
     @Test
     fun `matrix 1x1 getComplementMatrix throws error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
-            val matrix = Matrix(1, 1, doubleArrayOf(1.1).toTypedArray())
-            matrix.getComplementMatrix()
-        }
-        Assert.assertEquals("cannot get complement matrix for 1x1 matrix", exception.message)
+        val matrix = Matrix(1, 1, doubleArrayOf(1.1).toTypedArray())
+        val complementMatrix = matrix.getComplementMatrix()
+        val rightAnswer = Matrix(1, 1, doubleArrayOf(1.0 / 1.1).toTypedArray())
+        Assert.assertEquals(rightAnswer[0, 0], complementMatrix[0, 0], 0.0)
     }
 
     /**
      * The method tests the Matrix.getComplementMatrix() throws error when matrix is non-square
      * @see Matrix.getComplementMatrix
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `non-square matrix getComplementMatrix throws error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix = Matrix(1, 2, doubleArrayOf(1.1, 2.5).toTypedArray())
             matrix.getComplementMatrix()
         }
+        println("caught exception: $exception")
         Assert.assertEquals("complement matrix doesn't exist for non-square matrices", exception.message)
     }
 
@@ -436,13 +452,15 @@ class MatrixTesting {
      * The method tests the Matrix.plus() throws error when matrices have different dimensions
      * @see Matrix.plus
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `matrix plus dimension error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
             matrix1 + matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("cannot add matrices of different dimensions", exception.message)
     }
 
@@ -487,13 +505,15 @@ class MatrixTesting {
      * The method tests the Matrix.plusAssign() throws error when matrices have different dimensions
      * @see Matrix.plusAssign
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `matrix plusAssign dimension error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
             matrix1 += matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("cannot add matrices of different dimensions", exception.message)
     }
 
@@ -526,13 +546,15 @@ class MatrixTesting {
      * The method tests the Matrix.minus() throws error when matrices have different dimensions
      * @see Matrix.minus
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `matrix minus dimension error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
             matrix1 - matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("cannot substitute matrices of different dimensions", exception.message)
     }
 
@@ -577,13 +599,15 @@ class MatrixTesting {
      * The method tests the Matrix.minusAssign() throws error when matrices have different dimensions
      * @see Matrix.minusAssign
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `matrix minusAssign dimension error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
             matrix1 -= matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("cannot substitute matrices of different dimensions", exception.message)
     }
 
@@ -604,13 +628,15 @@ class MatrixTesting {
      * The method tests the Matrix.times() throws error when matrices have wrong dimensions
      * @see Matrix.times
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `matrix times dimension error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
             matrix1 * matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("matrices of these sizes cannot be multiplied", exception.message)
     }
 
@@ -655,13 +681,15 @@ class MatrixTesting {
      * The method tests the Matrix.timesAssign() throws error when matrices have wrong dimensions
      * @see Matrix.timesAssign
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `matrix timesAssign dimension error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
             matrix1 *= matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("matrices of these sizes cannot be multiplied", exception.message)
     }
 
@@ -694,13 +722,15 @@ class MatrixTesting {
      * The method tests the Matrix.div() throws error for non-square matrix
      * @see Matrix.div
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `div error for non-square matrix testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
             val matrix2 = Matrix(2, 2, doubleArrayOf(1.2, 2.3, 4.2, 3.1).toTypedArray())
             matrix1 / matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("division cannot be performed with non-square matrices", exception.message)
     }
 
@@ -708,13 +738,15 @@ class MatrixTesting {
      * The method tests the Matrix.div() throws error when divide by matrix with zero determinant
      * @see Matrix.div
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `error when divide on zero-determinant matrix testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(2, 2, doubleArrayOf(1.0, 1.0, 4.0, 4.0).toTypedArray())
             matrix1 / matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals(
             "the right matrix does not have an inverse matrix, division cannot be performed",
             exception.message
@@ -737,13 +769,15 @@ class MatrixTesting {
      * The method tests the Matrix.div() throws error for 1x1 divide by 1x1 matrix when divider = 0
      * @see Matrix.div
      */
+    @Throws(ArithmeticException::class)
     @Test
     fun `1x1 divide by 1x1 zero matrix throws error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<ArithmeticException> {
             val matrix1 = Matrix(1, 1, doubleArrayOf(5.0).toTypedArray())
             val matrix2 = Matrix(1, 1, doubleArrayOf(0.0).toTypedArray())
             matrix1 / matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("it is forbidden to divide by zero", exception.message)
     }
 
@@ -795,13 +829,15 @@ class MatrixTesting {
      * The method tests the Matrix.divAssign() throws error for non-square matrix
      * @see Matrix.divAssign
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `divAssign error for non-square matrix testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
             val matrix2 = Matrix(2, 2, doubleArrayOf(1.2, 2.3, 4.2, 3.1).toTypedArray())
             matrix1 /= matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("division cannot be performed with non-square matrices", exception.message)
     }
 
@@ -809,13 +845,15 @@ class MatrixTesting {
      * The method tests the Matrix.divAssign() throws error when divide by matrix with zero determinant
      * @see Matrix.divAssign
      */
+    @Throws(IllegalArgumentException::class)
     @Test
     fun `error when divAssign on zero-determinant matrix testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<IllegalArgumentException> {
             val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
             val matrix2 = Matrix(2, 2, doubleArrayOf(1.0, 1.0, 4.0, 4.0).toTypedArray())
             matrix1 /= matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals(
             "the right matrix does not have an inverse matrix, division cannot be performed",
             exception.message
@@ -838,13 +876,15 @@ class MatrixTesting {
      * The method tests the Matrix.divAssign() throws error for 1x1 divide by 1x1 matrix when divider = 0
      * @see Matrix.divAssign
      */
+    @Throws(ArithmeticException::class)
     @Test
     fun `1x1 divideAssign by 1x1 zero matrix throws error testing`() {
-        val exception = assertFailsWith<IllegalStateException> {
+        val exception = assertFailsWith<ArithmeticException> {
             val matrix1 = Matrix(1, 1, doubleArrayOf(5.0).toTypedArray())
             val matrix2 = Matrix(1, 1, doubleArrayOf(0.0).toTypedArray())
             matrix1 /= matrix2
         }
+        println("caught exception: $exception")
         Assert.assertEquals("it is forbidden to divide by zero", exception.message)
     }
 
