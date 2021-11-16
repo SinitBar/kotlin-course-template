@@ -17,7 +17,7 @@ class MatrixTesting {
      */
     @Test
     fun `Create 1x1 matrix testing`() {
-        val matrix = Matrix(1, 1)
+        val matrix = Matrix(Array(1) { Array(1) { 0.0 } })
         Assert.assertEquals(1, matrix.size())
     }
 
@@ -27,7 +27,7 @@ class MatrixTesting {
      */
     @Test
     fun `Create 1x1 matrix default zero testing`() {
-        val matrix = Matrix(1, 1)
+        val matrix = Matrix(Array(1) { Array(1) { 0.0 } })
         Assert.assertEquals(0.0, matrix[0, 0], 0.0)
     }
 
@@ -38,9 +38,9 @@ class MatrixTesting {
     @Throws(IllegalArgumentException::class)
     @Test
     fun `Create matrix error testing`() {
-        val exception = assertFailsWith<IllegalArgumentException> { Matrix(0, 1) }
+        val exception = assertFailsWith<IllegalArgumentException> { Matrix(Array(0) { Array(1) { 0.0 } }) }
         println("caught exception: $exception")
-        Assert.assertEquals("cannot create matrix with data size", exception.message)
+        Assert.assertEquals("can't create empty matrix", exception.message)
     }
 
     /**
@@ -49,24 +49,11 @@ class MatrixTesting {
      */
     @Test
     fun `Create 2x1 matrix initialized as Array of arrays of doubles testing`() {
-        val matrix = Matrix(2, 1, Array(2) { Array(1) { 2.0 } })
+        val matrix = Matrix(Array(2) { Array(1) { 2.0 } })
+        Assert.assertEquals(2, matrix.columnSize())
+        Assert.assertEquals(1, matrix.lineSize())
         Assert.assertEquals(2.0, matrix[0, 0], 0.0)
         Assert.assertEquals(2.0, matrix[1, 0], 0.0)
-    }
-
-    /**
-     * The method tests the creation of object of the class Matrix with data matrix like array
-     * using secondary constructor with wrong sizes
-     * @see Matrix
-     */
-    @Throws(IllegalArgumentException::class)
-    @Test
-    fun `Create 2x1 matrix initialized as array of doubles error wrong size testing`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
-            Matrix(2, 1, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-        }
-        println("caught exception: $exception")
-        Assert.assertEquals("wrong amount of numbers, failed initialization", exception.message)
     }
 
     /**
@@ -76,38 +63,28 @@ class MatrixTesting {
      */
     @Test
     fun `Create 2x2 matrix initialized as array of doubles testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
         Assert.assertEquals(1.1, matrix[0, 0], 0.0)
     }
 
     /**
-     * The method tests the Matrix.size() works correct
-     * @see Matrix.size
-     */
-    @Test
-    fun `Matrix size testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-        Assert.assertEquals(4, matrix.size())
-    }
-
-    /**
-     * The method tests the Matrix.stringSize() works correct
-     * @see Matrix.stringSize
+     * The method tests the Matrix.columnSize() works correct
+     * @see Matrix.columnSize
      */
     @Test
     fun `Matrix stringSize testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-        Assert.assertEquals(2, matrix.stringSize())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+        Assert.assertEquals(2, matrix.columnSize())
     }
 
     /**
      * The method tests the Matrix.stringSize() works correct
-     * @see Matrix.rowSize
+     * @see Matrix.lineSize
      */
     @Test
     fun `Matrix rowSize testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-        Assert.assertEquals(2, matrix.rowSize())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+        Assert.assertEquals(2, matrix.lineSize())
     }
 
     /**
@@ -116,8 +93,8 @@ class MatrixTesting {
      */
     @Test
     fun `get Matrix testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-        Assert.assertEquals(2, matrix.rowSize())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+        Assert.assertEquals(2, matrix.lineSize())
     }
 
     /**
@@ -128,7 +105,7 @@ class MatrixTesting {
     @Test
     fun `get Matrix invalid index testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+            val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
             matrix[3, 0]
         }
         println("caught exception: $exception")
@@ -141,7 +118,7 @@ class MatrixTesting {
      */
     @Test
     fun `set Matrix testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
         matrix[0, 1] = 5.0
         Assert.assertEquals(5.0, matrix[0, 1], 0.0)
     }
@@ -154,7 +131,7 @@ class MatrixTesting {
     @Test
     fun `set Matrix invalid index testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+            val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
             matrix[3, 0] = 0.0
         }
         println("caught exception: $exception")
@@ -167,8 +144,8 @@ class MatrixTesting {
      */
     @Test
     fun `equals matrix testing`() {
-        val matrix1 = Matrix(1, 1)
-        val matrix2 = Matrix(1, 1)
+        val matrix1 = Matrix(Array(1) { Array(1) { 0.0 } })
+        val matrix2 = Matrix(Array(1) { Array(1) { 0.0 } })
         Assert.assertEquals(matrix1, matrix2)
     }
 
@@ -178,7 +155,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 1x1 getTransposed testing`() {
-        val matrix = Matrix(1, 1, doubleArrayOf(1.1).toTypedArray())
+        val matrix = Matrix(Array(1) { Array(1) { 1.1 } })
         Assert.assertEquals(1.1, matrix.getTransposed()[0, 0], 0.0)
     }
 
@@ -188,7 +165,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 2x2 getTransposed testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
         val transposed = matrix.getTransposed()
         Assert.assertEquals(matrix[0, 0], transposed[0, 0], 0.0)
         Assert.assertEquals(matrix[1, 1], transposed[1, 1], 0.0)
@@ -203,11 +180,11 @@ class MatrixTesting {
     @Test
     fun `matrix 3x3 getTransposed testing`() {
         val matrix = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -2.0, 3.0,
-                4.0, 0.0, 6.0,
-                -7.0, 8.0, 9.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -2.0, 3.0),
+                arrayOf(4.0, 0.0, 6.0),
+                arrayOf(-7.0, 8.0, 9.0)
+            )
         )
         val transposed = matrix.getTransposed()
         Assert.assertEquals(matrix[0, 0], transposed[0, 0], 0.0)
@@ -229,7 +206,7 @@ class MatrixTesting {
     @Test
     fun `matrix 1x1 getMinorMatrix throws error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix = Matrix(1, 1, doubleArrayOf(1.1).toTypedArray())
+            val matrix = Matrix(Array(1) { Array(1) { 1.1 } })
             matrix.getMinorMatrix(0, 0)
         }
         println("caught exception: $exception")
@@ -244,7 +221,7 @@ class MatrixTesting {
     @Test
     fun `non-square matrix getMinorMatrix throws error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix = Matrix(1, 2, doubleArrayOf(1.1, 2.5).toTypedArray())
+            val matrix = Matrix(arrayOf(arrayOf(1.1, 2.5)))
             matrix.getMinorMatrix(0, 0)
         }
         println("caught exception: $exception")
@@ -259,7 +236,7 @@ class MatrixTesting {
     @Test
     fun `minor with invalid index in matrix getMinorMatrix throws error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.5, 1.3, 4.7).toTypedArray())
+            val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
             matrix.getMinorMatrix(3, 0)
         }
         println("caught exception: $exception")
@@ -272,7 +249,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 2x2 getMinorMatrix size testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
         Assert.assertEquals(1, matrix.getMinorMatrix(0, 0).size())
         Assert.assertEquals(1, matrix.getMinorMatrix(0, 1).size())
         Assert.assertEquals(1, matrix.getMinorMatrix(1, 0).size())
@@ -285,7 +262,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 2x2 getMinorMatrix testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
         Assert.assertEquals(4.4, matrix.getMinorMatrix(0, 0)[0, 0], 0.0)
         Assert.assertEquals(3.3, matrix.getMinorMatrix(0, 1)[0, 0], 0.0)
         Assert.assertEquals(2.2, matrix.getMinorMatrix(1, 0)[0, 0], 0.0)
@@ -299,11 +276,11 @@ class MatrixTesting {
     @Test
     fun `matrix 3x3 getMinorMatrix size testing`() {
         val matrix = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -2.0, 3.0,
-                4.0, 0.0, 6.0,
-                -7.0, 8.0, 9.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -2.0, 3.0),
+                arrayOf(4.0, 0.0, 6.0),
+                arrayOf(-7.0, 8.0, 9.0)
+            )
         )
         Assert.assertEquals(4, matrix.getMinorMatrix(0, 0).size())
         Assert.assertEquals(4, matrix.getMinorMatrix(0, 1).size())
@@ -323,11 +300,11 @@ class MatrixTesting {
     @Test
     fun `matrix 3x3 getMinorMatrix testing`() {
         val matrix = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -2.0, 3.0,
-                4.0, 0.0, 6.0,
-                -7.0, 8.0, 9.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -2.0, 3.0),
+                arrayOf(4.0, 0.0, 6.0),
+                arrayOf(-7.0, 8.0, 9.0)
+            )
         )
         val minor11 = matrix.getMinorMatrix(1, 1)
         Assert.assertEquals(matrix[0, 0], minor11[0, 0], 0.0)
@@ -342,7 +319,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 1x1 calcDeterminant testing`() {
-        val matrix = Matrix(1, 1, doubleArrayOf(1.1).toTypedArray())
+        val matrix = Matrix(Array(1) { Array(1) { 1.1 } })
         Assert.assertEquals(1.1, matrix.calcDeterminant(), 0.0)
     }
 
@@ -352,7 +329,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 2x2 calcDeterminant testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
         Assert.assertEquals(1.1 * 4.4 - 2.2 * 3.3, matrix.calcDeterminant(), 0.0)
     }
 
@@ -363,11 +340,11 @@ class MatrixTesting {
     @Test
     fun `matrix 3x3 calcDeterminant testing`() {
         val matrix = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -2.0, 3.0,
-                4.0, 0.0, 6.0,
-                -7.0, 8.0, 9.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -2.0, 3.0),
+                arrayOf(4.0, 0.0, 6.0),
+                arrayOf(-7.0, 8.0, 9.0)
+            )
         )
         Assert.assertEquals(204.0, matrix.calcDeterminant(), 0.0)
     }
@@ -379,12 +356,12 @@ class MatrixTesting {
     @Test
     fun `matrix 4x4 calcDeterminant testing`() {
         val matrix = Matrix(
-            4, 4, doubleArrayOf(
-                3.0, -3.0, -5.0, 8.0,
-                -3.0, 2.0, 4.0, -6.0,
-                2.0, -5.0, -7.0, 5.0,
-                -4.0, 3.0, 5.0, -6.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(3.0, -3.0, -5.0, 8.0),
+                arrayOf(-3.0, 2.0, 4.0, -6.0),
+                arrayOf(2.0, -5.0, -7.0, 5.0),
+                arrayOf(-4.0, 3.0, 5.0, -6.0)
+            )
         )
         Assert.assertEquals(18.0, matrix.calcDeterminant(), 0.0)
     }
@@ -397,12 +374,12 @@ class MatrixTesting {
     @Test
     fun `matrix 4x4 getMinor testing`() {
         val matrix = Matrix(
-            4, 4, doubleArrayOf(
-                3.0, -3.0, -5.0, 8.0,
-                -3.0, 2.0, 4.0, -6.0,
-                2.0, -5.0, -7.0, 5.0,
-                -4.0, 3.0, 5.0, -6.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(3.0, -3.0, -5.0, 8.0),
+                arrayOf(-3.0, 2.0, 4.0, -6.0),
+                arrayOf(2.0, -5.0, -7.0, 5.0),
+                arrayOf(-4.0, 3.0, 5.0, -6.0)
+            )
         )
         Assert.assertEquals(-2.0, matrix.getMinor(0, 0), 0.0)
     }
@@ -413,9 +390,9 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 1x1 getComplementMatrix throws error testing`() {
-        val matrix = Matrix(1, 1, doubleArrayOf(1.1).toTypedArray())
+        val matrix = Matrix(Array(1) { Array(1) { 1.1 } })
         val complementMatrix = matrix.getComplementMatrix()
-        val rightAnswer = Matrix(1, 1, doubleArrayOf(1.0 / 1.1).toTypedArray())
+        val rightAnswer = Matrix(Array(1) { Array(1) { 1.0 / 1.1 } })
         Assert.assertEquals(rightAnswer[0, 0], complementMatrix[0, 0], 0.0)
     }
 
@@ -427,7 +404,7 @@ class MatrixTesting {
     @Test
     fun `non-square matrix getComplementMatrix throws error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix = Matrix(1, 2, doubleArrayOf(1.1, 2.5).toTypedArray())
+            val matrix = Matrix(arrayOf(arrayOf(1.1, 2.5)))
             matrix.getComplementMatrix()
         }
         println("caught exception: $exception")
@@ -440,7 +417,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix 2x2 getComplementMatrix testing`() {
-        val matrix = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
+        val matrix = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
         val complement = matrix.getComplementMatrix()
         Assert.assertEquals(matrix[1, 1], complement[0, 0], 0.0)
         Assert.assertEquals(-matrix[1, 0], complement[0, 1], 0.0)
@@ -456,8 +433,8 @@ class MatrixTesting {
     @Test
     fun `matrix plus dimension error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
             matrix1 + matrix2
         }
         println("caught exception: $exception")
@@ -470,8 +447,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix plus creates new matrix testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         val matrix3 = matrix1 + matrix2
         Assert.assertTrue(matrix1 !== matrix3)
     }
@@ -482,8 +459,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix plus testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         val matrix3 = matrix1 + matrix2
         Assert.assertEquals(2.3, matrix3[0, 0], 0.0)
         Assert.assertEquals(4.5, matrix3[0, 1], 0.0)
@@ -495,8 +472,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix size after plus testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         val matrix3 = matrix1 + matrix2
         Assert.assertEquals(2, matrix3.size())
     }
@@ -509,8 +486,8 @@ class MatrixTesting {
     @Test
     fun `matrix plusAssign dimension error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
             matrix1 += matrix2
         }
         println("caught exception: $exception")
@@ -523,8 +500,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix plusAssign creates new matrix testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         matrix1 += matrix2
         Assert.assertTrue(matrix1 === matrix1)
     }
@@ -535,8 +512,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix plusAssign testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         matrix1 += matrix2
         Assert.assertEquals(2.3, matrix1[0, 0], 0.0)
         Assert.assertEquals(4.5, matrix1[0, 1], 0.0)
@@ -550,8 +527,8 @@ class MatrixTesting {
     @Test
     fun `matrix minus dimension error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
             matrix1 - matrix2
         }
         println("caught exception: $exception")
@@ -564,8 +541,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix minus creates new matrix testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         val matrix3 = matrix1 - matrix2
         Assert.assertTrue(matrix1 !== matrix3)
     }
@@ -576,8 +553,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix minus testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         val matrix3 = matrix1 - matrix2
         Assert.assertEquals(1.1 - 1.2, matrix3[0, 0], 0.0)
         Assert.assertEquals(2.2 - 2.3, matrix3[0, 1], 0.0)
@@ -589,8 +566,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix size after minus testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         val matrix3 = matrix1 - matrix2
         Assert.assertEquals(2, matrix3.size())
     }
@@ -603,8 +580,8 @@ class MatrixTesting {
     @Test
     fun `matrix minusAssign dimension error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
             matrix1 -= matrix2
         }
         println("caught exception: $exception")
@@ -617,8 +594,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix minusAssign testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
         matrix1 -= matrix2
         Assert.assertEquals(1.1 - 1.2, matrix1[0, 0], 0.0)
         Assert.assertEquals(2.2 - 2.3, matrix1[0, 1], 0.0)
@@ -632,8 +609,8 @@ class MatrixTesting {
     @Test
     fun `matrix times dimension error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
             matrix1 * matrix2
         }
         println("caught exception: $exception")
@@ -646,8 +623,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix times creates new matrix testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(2, 1, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2), arrayOf(2.3)))
         val matrix3 = matrix1 * matrix2
         Assert.assertTrue(matrix1 !== matrix3)
     }
@@ -658,8 +635,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix times testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(2, 2, doubleArrayOf(1.2, 2.3, 1.0, 1.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3), arrayOf(1.0, 1.0)))
         val matrix3 = matrix1 * matrix2
         Assert.assertEquals(1.1 * 1.2 + 2.2, matrix3[0, 0], 0.0)
         Assert.assertEquals(1.1 * 2.3 + 2.2, matrix3[0, 1], 0.0)
@@ -671,10 +648,11 @@ class MatrixTesting {
      */
     @Test
     fun `matrix size after times testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(2, 1, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2), arrayOf(2.3)))
         val matrix3 = matrix1 * matrix2
-        Assert.assertEquals(1, matrix3.size())
+        Assert.assertEquals(1, matrix3.lineSize())
+        Assert.assertEquals(1, matrix3.columnSize())
     }
 
     /**
@@ -685,8 +663,8 @@ class MatrixTesting {
     @Test
     fun `matrix timesAssign dimension error testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(1, 2, doubleArrayOf(1.2, 2.3).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3)))
             matrix1 *= matrix2
         }
         println("caught exception: $exception")
@@ -699,8 +677,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix timesAssign testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(2, 2, doubleArrayOf(1.2, 2.3, 1.0, 1.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3), arrayOf(1.0, 1.0)))
         matrix1 *= matrix2
         Assert.assertEquals(1.1 * 1.2 + 2.2, matrix1[0, 0], 0.0)
         Assert.assertEquals(1.1 * 2.3 + 2.2, matrix1[0, 1], 0.0)
@@ -712,8 +690,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix size after timesAssign testing`() {
-        val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-        val matrix2 = Matrix(2, 1, doubleArrayOf(1.2, 2.3).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+        val matrix2 = Matrix(arrayOf(arrayOf(1.2), arrayOf(2.3)))
         matrix1 *= matrix2
         Assert.assertEquals(1, matrix1.size())
     }
@@ -726,8 +704,8 @@ class MatrixTesting {
     @Test
     fun `div error for non-square matrix testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-            val matrix2 = Matrix(2, 2, doubleArrayOf(1.2, 2.3, 4.2, 3.1).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
             matrix1 / matrix2
         }
         println("caught exception: $exception")
@@ -742,8 +720,8 @@ class MatrixTesting {
     @Test
     fun `error when divide on zero-determinant matrix testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(2, 2, doubleArrayOf(1.0, 1.0, 4.0, 4.0).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.0, 1.0), arrayOf(4.0, 4.0)))
             matrix1 / matrix2
         }
         println("caught exception: $exception")
@@ -759,8 +737,8 @@ class MatrixTesting {
      */
     @Test
     fun `1x1 divide by 1x1 matrix testing`() {
-        val matrix1 = Matrix(1, 1, doubleArrayOf(5.0).toTypedArray())
-        val matrix2 = Matrix(1, 1, doubleArrayOf(1.0).toTypedArray())
+        val matrix1 = Matrix(Array(1) { Array(1) { 5.0 } })
+        val matrix2 = Matrix(Array(1) { Array(1) { 1.0 } })
         val matrix3 = matrix1 / matrix2
         Assert.assertEquals(5.0, matrix3[0, 0], 0.0)
     }
@@ -773,8 +751,8 @@ class MatrixTesting {
     @Test
     fun `1x1 divide by 1x1 zero matrix throws error testing`() {
         val exception = assertFailsWith<ArithmeticException> {
-            val matrix1 = Matrix(1, 1, doubleArrayOf(5.0).toTypedArray())
-            val matrix2 = Matrix(1, 1, doubleArrayOf(0.0).toTypedArray())
+            val matrix1 = Matrix(Array(1) { Array(1) { 5.0 } })
+            val matrix2 = Matrix(Array(1) { Array(1) { 0.0 } })
             matrix1 / matrix2
         }
         println("caught exception: $exception")
@@ -787,10 +765,10 @@ class MatrixTesting {
      */
     @Test
     fun `2x2 divide by 2x2 matrix testing`() {
-        val matrix1 = Matrix(2, 2, doubleArrayOf(1.0, 1.0, 1.0, 1.0).toTypedArray())
-        val matrix2 = Matrix(2, 2, doubleArrayOf(3.0, 1.0, 5.0, 2.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.0, 1.0), arrayOf(1.0, 1.0)))
+        val matrix2 = Matrix(arrayOf(arrayOf(3.0, 1.0), arrayOf(5.0, 2.0)))
         val matrix3 = matrix1 / matrix2
-        val answer = Matrix(2, 2, doubleArrayOf(-3.0, 2.0, -3.0, 2.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(-3.0, 2.0), arrayOf(-3.0, 2.0)))
         Assert.assertEquals(answer, matrix3)
     }
 
@@ -801,26 +779,26 @@ class MatrixTesting {
     @Test
     fun `3x3 divide by 3x3 matrix testing`() {
         val matrix1 = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -1.0, 2.0,
-                0.0, 2.0, -1.0,
-                1.0, 0.0, 1.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -1.0, 2.0),
+                arrayOf(0.0, 2.0, -1.0),
+                arrayOf(1.0, 0.0, 1.0)
+            )
         )
         val matrix2 = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -1.0, 2.0,
-                0.0, 2.0, -1.0,
-                1.0, 0.0, 1.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -1.0, 2.0),
+                arrayOf(0.0, 2.0, -1.0),
+                arrayOf(1.0, 0.0, 1.0)
+            )
         )
         val matrix3 = matrix1 / matrix2
         val answer = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, 0.0, 0.0,
-                0.0, 1.0, 0.0,
-                0.0, 0.0, 1.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, 0.0, 0.0),
+                arrayOf(0.0, 1.0, 0.0),
+                arrayOf(0.0, 0.0, 1.0)
+            )
         )
         Assert.assertEquals(answer, matrix3)
     }
@@ -833,8 +811,8 @@ class MatrixTesting {
     @Test
     fun `divAssign error for non-square matrix testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(1, 2, doubleArrayOf(1.1, 2.2).toTypedArray())
-            val matrix2 = Matrix(2, 2, doubleArrayOf(1.2, 2.3, 4.2, 3.1).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.2, 2.3), arrayOf(4.2, 3.1)))
             matrix1 /= matrix2
         }
         println("caught exception: $exception")
@@ -849,8 +827,8 @@ class MatrixTesting {
     @Test
     fun `error when divAssign on zero-determinant matrix testing`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            val matrix1 = Matrix(2, 2, doubleArrayOf(1.1, 2.2, 3.3, 4.4).toTypedArray())
-            val matrix2 = Matrix(2, 2, doubleArrayOf(1.0, 1.0, 4.0, 4.0).toTypedArray())
+            val matrix1 = Matrix(arrayOf(arrayOf(1.1, 2.2), arrayOf(3.3, 4.4)))
+            val matrix2 = Matrix(arrayOf(arrayOf(1.0, 1.0), arrayOf(4.0, 4.0)))
             matrix1 /= matrix2
         }
         println("caught exception: $exception")
@@ -866,8 +844,8 @@ class MatrixTesting {
      */
     @Test
     fun `1x1 divideAssign by 1x1 matrix testing`() {
-        val matrix1 = Matrix(1, 1, doubleArrayOf(5.0).toTypedArray())
-        val matrix2 = Matrix(1, 1, doubleArrayOf(1.0).toTypedArray())
+        val matrix1 = Matrix(Array(1) { Array(1) { 5.0 } })
+        val matrix2 = Matrix(Array(1) { Array(1) { 1.0 } })
         matrix1 /= matrix2
         Assert.assertEquals(5.0, matrix1[0, 0], 0.0)
     }
@@ -880,8 +858,8 @@ class MatrixTesting {
     @Test
     fun `1x1 divideAssign by 1x1 zero matrix throws error testing`() {
         val exception = assertFailsWith<ArithmeticException> {
-            val matrix1 = Matrix(1, 1, doubleArrayOf(5.0).toTypedArray())
-            val matrix2 = Matrix(1, 1, doubleArrayOf(0.0).toTypedArray())
+            val matrix1 = Matrix(Array(1) { Array(1) { 5.0 } })
+            val matrix2 = Matrix(Array(1) { Array(1) { 0.0 } })
             matrix1 /= matrix2
         }
         println("caught exception: $exception")
@@ -894,10 +872,10 @@ class MatrixTesting {
      */
     @Test
     fun `2x2 divideAssign by 2x2 matrix testing`() {
-        val matrix1 = Matrix(2, 2, doubleArrayOf(1.0, 1.0, 1.0, 1.0).toTypedArray())
-        val matrix2 = Matrix(2, 2, doubleArrayOf(3.0, 1.0, 5.0, 2.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(1.0, 1.0), arrayOf(1.0, 1.0)))
+        val matrix2 = Matrix(arrayOf(arrayOf(3.0, 1.0), arrayOf(5.0, 2.0)))
         matrix1 /= matrix2
-        val answer = Matrix(2, 2, doubleArrayOf(-3.0, 2.0, -3.0, 2.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(-3.0, 2.0), arrayOf(-3.0, 2.0)))
         Assert.assertEquals(answer, matrix1)
     }
 
@@ -908,26 +886,26 @@ class MatrixTesting {
     @Test
     fun `3x3 divideAssign by 3x3 matrix testing`() {
         val matrix1 = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -1.0, 2.0,
-                0.0, 2.0, -1.0,
-                1.0, 0.0, 1.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -1.0, 2.0),
+                arrayOf(0.0, 2.0, -1.0),
+                arrayOf(1.0, 0.0, 1.0)
+            )
         )
         val matrix2 = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, -1.0, 2.0,
-                0.0, 2.0, -1.0,
-                1.0, 0.0, 1.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, -1.0, 2.0),
+                arrayOf(0.0, 2.0, -1.0),
+                arrayOf(1.0, 0.0, 1.0)
+            )
         )
         matrix1 /= matrix2
         val answer = Matrix(
-            3, 3, doubleArrayOf(
-                1.0, 0.0, 0.0,
-                0.0, 1.0, 0.0,
-                0.0, 0.0, 1.0
-            ).toTypedArray()
+            arrayOf(
+                arrayOf(1.0, 0.0, 0.0),
+                arrayOf(0.0, 1.0, 0.0),
+                arrayOf(0.0, 0.0, 1.0)
+            )
         )
         Assert.assertEquals(answer, matrix1)
     }
@@ -938,10 +916,10 @@ class MatrixTesting {
      */
     @Test
     fun `2x2 matrix times scalar testing`() {
-        val matrix2 = Matrix(2, 2, doubleArrayOf(3.0, 1.0, 5.0, 2.0).toTypedArray())
+        val matrix2 = Matrix(arrayOf(arrayOf(3.0, 1.0), arrayOf(5.0, 2.0)))
         val scalar = 2.0
         val matrix1 = matrix2 * scalar
-        val answer = Matrix(2, 2, doubleArrayOf(6.0, 2.0, 10.0, 4.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(6.0, 2.0), arrayOf(10.0, 4.0)))
         Assert.assertEquals(answer, matrix1)
     }
 
@@ -951,10 +929,10 @@ class MatrixTesting {
      */
     @Test
     fun `2x2 scalar times matrix testing`() {
-        val matrix2 = Matrix(2, 2, doubleArrayOf(3.0, 1.0, 5.0, 2.0).toTypedArray())
+        val matrix2 = Matrix(arrayOf(arrayOf(3.0, 1.0), arrayOf(5.0, 2.0)))
         val scalar = 2.0
         val matrix1 = scalar * matrix2
-        val answer = Matrix(2, 2, doubleArrayOf(6.0, 2.0, 10.0, 4.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(6.0, 2.0), arrayOf(10.0, 4.0)))
         Assert.assertEquals(answer, matrix1)
     }
 
@@ -964,10 +942,10 @@ class MatrixTesting {
      */
     @Test
     fun `2x2 scalar timesAssign matrix testing`() {
-        val matrix1 = Matrix(2, 2, doubleArrayOf(3.0, 1.0, 5.0, 2.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(3.0, 1.0), arrayOf(5.0, 2.0)))
         val scalar = 2.0
         matrix1 *= scalar
-        val answer = Matrix(2, 2, doubleArrayOf(6.0, 2.0, 10.0, 4.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(6.0, 2.0), arrayOf(10.0, 4.0)))
         Assert.assertEquals(answer, matrix1)
     }
 
@@ -977,10 +955,10 @@ class MatrixTesting {
      */
     @Test
     fun `2x2 scalar div matrix testing`() {
-        val matrix1 = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
         val scalar = 2.0
         val matrix2 = matrix1 / scalar
-        val answer = Matrix(2, 2, doubleArrayOf(2.0, 0.0, 3.0, 4.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(2.0, 0.0), arrayOf(3.0, 4.0)))
         Assert.assertEquals(answer, matrix2)
     }
 
@@ -990,10 +968,10 @@ class MatrixTesting {
      */
     @Test
     fun `2x2 scalar divAssign matrix testing`() {
-        val matrix1 = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
         val scalar = 2.0
         matrix1 /= scalar
-        val answer = Matrix(2, 2, doubleArrayOf(2.0, 0.0, 3.0, 4.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(2.0, 0.0), arrayOf(3.0, 4.0)))
         Assert.assertEquals(answer, matrix1)
     }
 
@@ -1003,9 +981,9 @@ class MatrixTesting {
      */
     @Test
     fun `-matrix testing`() {
-        var matrix1 = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
+        var matrix1 = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
         matrix1 = -matrix1
-        val answer = Matrix(2, 2, doubleArrayOf(-4.0, -0.0, -6.0, -8.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(-4.0, -0.0), arrayOf(-6.0, -8.0)))
         Assert.assertEquals(answer, matrix1)
     }
 
@@ -1015,9 +993,9 @@ class MatrixTesting {
      */
     @Test
     fun `+matrix testing`() {
-        var matrix1 = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
+        var matrix1 = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
         matrix1 = +matrix1
-        val answer = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
+        val answer = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
         Assert.assertEquals(answer, matrix1)
     }
 
@@ -1027,8 +1005,8 @@ class MatrixTesting {
      */
     @Test
     fun `matrix equals testing`() {
-        val matrix1 = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
-        val matrix2 = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
+        val matrix2 = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
         Assert.assertTrue(matrix1 == matrix2)
     }
 
@@ -1038,7 +1016,7 @@ class MatrixTesting {
      */
     @Test
     fun `matrix to string testing`() {
-        val matrix1 = Matrix(2, 2, doubleArrayOf(4.0, 0.0, 6.0, 8.0).toTypedArray())
+        val matrix1 = Matrix(arrayOf(arrayOf(4.0, 0.0), arrayOf(6.0, 8.0)))
         val answer = "4.0 0.0" + System.lineSeparator() + "6.0 8.0"
         Assert.assertEquals(answer, matrix1.toString())
     }
