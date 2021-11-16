@@ -22,6 +22,7 @@ fun parseTextToStrings(
         textCopy.forEach {
             strings.add(it.toString())
         }
+        textCopy = ""
     }
     while (last < textCopy.length && last > 0) {
         // if current or next is the space, have a formatted string
@@ -132,10 +133,8 @@ fun alignJustify( // Add spaces between words in data strings and return them li
             }
             index++
         }
-        buildString {
-            for (i in 0 until strings.size) append(strings[i], System.lineSeparator())
-            if (aligned.isNotBlank()) append(aligned)
-        }
+        for (i in 0 until strings.size) append(strings[i], System.lineSeparator())
+        if (aligned.isNotBlank()) append(aligned)
     }
 }
 
