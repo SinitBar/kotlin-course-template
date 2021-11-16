@@ -15,8 +15,10 @@ interface CalcShape {
     fun calcPerimeter(): Double
 }
 
-interface CalcCircle : CalcShape {
-    val radius: Double
+class Circle(var radius: Double) : CalcShape {
+    init {
+        if (this.radius <= 0) throw IllegalArgumentException("radius should be a positive number")
+    }
 
     override fun calcArea(): Double {
         return Math.PI * radius * radius
@@ -27,8 +29,10 @@ interface CalcCircle : CalcShape {
     }
 }
 
-interface CalcSquare : CalcShape {
-    val sideLength: Double
+class Square(var sideLength: Double) : CalcShape {
+    init {
+        if (this.sideLength <= 0) throw IllegalArgumentException("square side should be a positive number")
+    }
 
     override fun calcArea(): Double {
         return sideLength * sideLength
@@ -39,9 +43,14 @@ interface CalcSquare : CalcShape {
     }
 }
 
-interface CalcRectangle : CalcShape {
-    val firstSideLength: Double
+class Rectangle(
+    val firstSideLength: Double,
     val secondSideLength: Double
+) : CalcShape {
+    init {
+        if (this.firstSideLength <= 0 || this.secondSideLength <= 0)
+            throw IllegalArgumentException("rectangle sides should be positive")
+    }
 
     override fun calcArea(): Double {
         return firstSideLength * secondSideLength
@@ -52,10 +61,19 @@ interface CalcRectangle : CalcShape {
     }
 }
 
-interface CalcTriangle : CalcShape {
-    val firstSideLength: Double
-    val secondSideLength: Double
+class Triangle(
+    val firstSideLength: Double,
+    val secondSideLength: Double,
     val thirdSideLength: Double
+) : CalcShape {
+    init {
+        if (this.firstSideLength <= 0 || this.secondSideLength <= 0 || this.thirdSideLength <= 0)
+            throw IllegalArgumentException("triangle sides should be positive")
+        if (firstSideLength >= secondSideLength + thirdSideLength
+            || secondSideLength >= firstSideLength + thirdSideLength
+            || thirdSideLength >= firstSideLength + secondSideLength
+        ) throw IllegalArgumentException("triangle with data length of the sides doesn't exist")
+    }
 
     override fun calcArea(): Double {
         val p = calcPerimeter() / 2 // want to calculate area using Heron's formula
@@ -64,43 +82,6 @@ interface CalcTriangle : CalcShape {
 
     override fun calcPerimeter(): Double {
         return firstSideLength + secondSideLength + thirdSideLength
-    }
-}
-
-class Circle(override var radius: Double) : CalcCircle {
-    init {
-        if (this.radius <= 0) throw IllegalArgumentException("radius should be a positive number")
-    }
-}
-
-class Square(override var sideLength: Double) : CalcSquare {
-    init {
-        if (this.sideLength <= 0) throw IllegalArgumentException("square side should be a positive number")
-    }
-}
-
-class Rectangle(
-    override val firstSideLength: Double,
-    override val secondSideLength: Double
-) : CalcRectangle {
-    init {
-        if (this.firstSideLength <= 0 || this.secondSideLength <= 0)
-            throw IllegalArgumentException("rectangle sides should be positive")
-    }
-}
-
-class Triangle(
-    override val firstSideLength: Double,
-    override val secondSideLength: Double,
-    override val thirdSideLength: Double
-) : CalcTriangle {
-    init {
-        if (this.firstSideLength <= 0 || this.secondSideLength <= 0 || this.thirdSideLength <= 0)
-            throw IllegalArgumentException("triangle sides should be positive")
-        if (firstSideLength >= secondSideLength + thirdSideLength
-            || secondSideLength >= firstSideLength + thirdSideLength
-            || thirdSideLength >= firstSideLength + secondSideLength
-        ) throw IllegalArgumentException("triangle with data length of the sides doesn't exist")
     }
 }
 
@@ -176,31 +157,4 @@ class ShapeFactory : ShapeFactoryInterface {
             Shapes.TRIANGLE -> createRandomTriangle()
         }
     }
-}
-
-fun generateShapes(factory: ShapeFactory): Array<CalcShape> {
-    return arrayOf(
-        // 3 circles
-        factory.createCircle(3.0),
-        factory.createCircle(4.5),
-        factory.createCircle(6.0),
-        // 3 squares
-        factory.createSquare(3.0),
-        factory.createSquare(4.5),
-        factory.createSquare(6.0),
-        // 3 rectangles
-        factory.createRectangle(3.0, 10.0),
-        factory.createRectangle(4.5, 5.2),
-        factory.createRectangle(6.0, 1.4),
-        // 3 triangles
-        factory.createTriangle(3.0, 4.0, 5.0),
-        factory.createTriangle(9.0, 5.0, 6.0),
-        factory.createTriangle(15.0, 15.0, 15.0),
-        // 4 random-sized shapes of every type and 1 random shape, could be commented
-        factory.createRandomCircle(),
-        factory.createRandomSquare(),
-        factory.createRandomRectangle(),
-        factory.createRandomTriangle(),
-        factory.createRandomShape()
-    )
 }
