@@ -11,7 +11,7 @@ const val spaceStr = " "
 const val spaceChar = ' '
 val symbols: Set<Char> = setOf('\"', '.', ',', ';', ':', '-', '(', ')', '!', '?', '»', '«')
 
-fun parseTextToStrings(
+private fun parseTextToStrings(
     text: String,
     strings: ArrayList<String>,
     lineWidth: Int,
@@ -55,7 +55,7 @@ fun parseTextToStrings(
     return textCopy
 }
 
-fun alignToTheLeft( // build one string from strings
+private fun alignToTheLeft( // build one string from strings
     lastString: String,
     strings: ArrayList<String>,
 ): String {
@@ -66,7 +66,7 @@ fun alignToTheLeft( // build one string from strings
     }
 }
 
-fun alignToTheRight( // add spaces to the beginning of data strings and return them like one string
+private fun alignToTheRight( // add spaces to the beginning of data strings and return them like one string
     lastString: String,
     strings: ArrayList<String>,
     lineWidth: Int,
@@ -78,7 +78,7 @@ fun alignToTheRight( // add spaces to the beginning of data strings and return t
     }
 }
 
-fun insertSpaces( // insert spaces around data string
+private fun insertSpaces( // insert spaces around data string
     dataString: String,
     lineWidth: Int,
     extraSpaces: Int,
@@ -96,7 +96,7 @@ fun insertSpaces( // insert spaces around data string
     }
 }
 
-fun alignToTheCenter( // Add spaces to the beginning and to the ending of data strings and return them like one string
+private fun alignToTheCenter( // Add spaces to the beginning and to the ending of data strings and return them like one string
     lastString: String,
     strings: ArrayList<String>,
     lineWidth: Int,
@@ -108,7 +108,7 @@ fun alignToTheCenter( // Add spaces to the beginning and to the ending of data s
     }
 }
 
-fun alignJustify( // Add spaces between words in data strings and return them like one string
+private fun alignJustify( // Add spaces between words in data strings and return them like one string
     aligned: String,
     strings: ArrayList<String>,
     lineWidth: Int,
