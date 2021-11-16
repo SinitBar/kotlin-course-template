@@ -28,3 +28,30 @@ fun main() {
     println("min perimeter = $minPerimeter, max perimeter = $maxPerimeter, sum perimeter = $sumPerimeter")
     println("min area = $minArea, max area = $maxArea, sum area = $sumArea")
 }
+
+fun generateShapes(factory: ShapeFactory): Array<CalcShape> {
+    return arrayOf(
+        // 3 circles
+        factory.createCircle(3.0),
+        factory.createCircle(4.5),
+        factory.createCircle(6.0),
+        // 3 squares
+        factory.createSquare(3.0),
+        factory.createSquare(4.5),
+        factory.createSquare(6.0),
+        // 3 rectangles
+        factory.createRectangle(3.0, 10.0),
+        factory.createRectangle(4.5, 5.2),
+        factory.createRectangle(6.0, 1.4),
+        // 3 triangles
+        factory.createTriangle(3.0, 4.0, 5.0),
+        factory.createTriangle(9.0, 5.0, 6.0),
+        factory.createTriangle(15.0, 15.0, 15.0),
+        // 4 random-sized shapes of every type and 1 random shape, could be commented
+        factory.createRandomCircle(),
+        factory.createRandomSquare(),
+        factory.createRandomRectangle(),
+        factory.createRandomTriangle(),
+        factory.createRandomShape()
+    )
+}
