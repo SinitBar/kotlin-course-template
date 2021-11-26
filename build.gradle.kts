@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation("log4j:log4j:1.2.17")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.5.21")
 }
 
