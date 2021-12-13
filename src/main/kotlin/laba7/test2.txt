@@ -1,0 +1,19 @@
+{
+    "type": "laba3.Triangle",
+    "firstSideLength": 3.0,
+    "secondSideLength": 4.0,
+    "thirdSideLength": 5.0
+}
+{
+    "type": "laba3.Rectangle",
+    "firstSideLength": 4.0,
+    "secondSideLength": 6.0
+}
+{
+    "type": "laba3.Circle",
+    "radius": 7.4
+}
+{
+    "type": "laba3.Square",
+    "sideLength": 4.9
+}
