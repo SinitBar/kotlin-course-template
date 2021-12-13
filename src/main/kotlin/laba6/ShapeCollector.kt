@@ -15,30 +15,21 @@ class ShapeCollector<T : CalcShape> {
 
     private val allShapes = mutableListOf<T>()
 
-    fun add(new: T) { // adds a figure into collector
-        allShapes.add(new)
-    }
+    fun add(new: T) = allShapes.add(new) // adds a figure into collector
 
-    fun addAll(newList: List<T>) { // adds a collection of figures into the collector
-        for (newElement in newList)
-            allShapes.add(newElement)
-    }
+    fun addAll(newList: List<T>) = allShapes.addAll(newList)
+    // adds a collection of figures into the collector
 
-    fun getAll(): List<T> { // returns a list of all figures in the collector
-        val list = mutableListOf<T>()
-        for (element in allShapes)
-            list.add(element)
-        return list.toList()
-    }
+    fun getAll(): List<T> = allShapes.toList()
+    // returns a list of all figures in the collector
 
     fun getAllSorted(comparator: Comparator<in T>): List<T> = getAll().sortedWith(comparator)
     // return all figures from the collector in order
     // specified by data comparator
+    // in because it is not needed to return T and we should go up to parent class to use comparator for shape
+    // when have a concrete figure (let circle/square/rectangle/triangle be shape)
 
-    inline fun <reified A : T> getAllByClass(what: Class<A>): List<A> { // return the shapes of Class<A> type
-        val list = mutableListOf<A>()
-        for (element in getAll())
-            if (element is A) list.add(element)
-        return list.toList()
+    fun getAllByClass(what: Class<out T>): List<T> { // out is to let shape be circle/triangle/rectangle/square
+        return allShapes.filter { element -> (element::class.java == what) }.toList()
     }
 }
