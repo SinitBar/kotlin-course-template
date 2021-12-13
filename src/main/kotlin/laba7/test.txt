@@ -1,0 +1,6 @@
+{
+    "type": "laba3.Triangle",
+    "firstSideLength": 3.0,
+    "secondSideLength": 4.0,
+    "thirdSideLength": 5.0
+}

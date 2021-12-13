@@ -2,6 +2,7 @@ package laba3
 
 import kotlin.math.sqrt
 import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
 enum class Shapes {
     CIRCLE,
@@ -13,9 +14,11 @@ enum class Shapes {
 interface CalcShape {
     fun calcArea(): Double
     fun calcPerimeter(): Double
+    override fun equals(other: Any?): Boolean
 }
 
-class Circle(var radius: Double) : CalcShape {
+@Serializable
+class Circle(val radius: Double) : CalcShape {
     init {
         if (this.radius <= 0) throw IllegalArgumentException("radius should be a positive number")
     }
@@ -27,8 +30,17 @@ class Circle(var radius: Double) : CalcShape {
     override fun calcPerimeter(): Double {
         return 2 * Math.PI * radius
     }
+
+    override fun equals(other: Any?): Boolean {
+        return (other != null && other is Circle && other.radius == radius)
+    }
+
+    override fun hashCode(): Int {
+        return radius.hashCode()
+    }
 }
 
+@Serializable
 class Square(var sideLength: Double) : CalcShape {
     init {
         if (this.sideLength <= 0) throw IllegalArgumentException("square side should be a positive number")
@@ -41,8 +53,17 @@ class Square(var sideLength: Double) : CalcShape {
     override fun calcPerimeter(): Double {
         return sideLength * 4
     }
+
+    override fun equals(other: Any?): Boolean {
+        return (other != null && other is Square && other.sideLength == sideLength)
+    }
+
+    override fun hashCode(): Int {
+        return sideLength.hashCode()
+    }
 }
 
+@Serializable
 class Rectangle(
     val firstSideLength: Double,
     val secondSideLength: Double
@@ -59,8 +80,21 @@ class Rectangle(
     override fun calcPerimeter(): Double {
         return firstSideLength * 2 + secondSideLength * 2
     }
+
+    override fun equals(other: Any?): Boolean {
+        return (other != null && other is Rectangle &&
+                other.firstSideLength == firstSideLength && other.secondSideLength == secondSideLength
+                )
+    }
+
+    override fun hashCode(): Int {
+        var result = firstSideLength.hashCode()
+        result = 31 * result + secondSideLength.hashCode()
+        return result
+    }
 }
 
+@Serializable
 class Triangle(
     val firstSideLength: Double,
     val secondSideLength: Double,
@@ -82,6 +116,20 @@ class Triangle(
 
     override fun calcPerimeter(): Double {
         return firstSideLength + secondSideLength + thirdSideLength
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return (other != null && other is Triangle &&
+                other.firstSideLength == firstSideLength && other.secondSideLength == secondSideLength &&
+                other.thirdSideLength == thirdSideLength
+                )
+    }
+
+    override fun hashCode(): Int {
+        var result = firstSideLength.hashCode()
+        result = 31 * result + secondSideLength.hashCode()
+        result = 31 * result + thirdSideLength.hashCode()
+        return result
     }
 }
 
