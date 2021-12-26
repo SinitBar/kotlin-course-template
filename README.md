@@ -1,2 +1,0 @@
-# AlgorithmsAndStructures
-University work
